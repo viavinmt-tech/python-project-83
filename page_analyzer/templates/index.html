@@ -8,7 +8,10 @@
     <style>
         body {
             background-color: #ffffff;
-            font-weight: 600;
+            font-weight: normal;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
         .navbar {
@@ -16,41 +19,54 @@
         }
         
         .navbar-brand {
-            font-weight: 600;
+            font-weight: normal !important;
             color: #ffffff !important;
             font-size: 1.1rem;
         }
         
+        .navbar .container {
+            display: flex;
+            justify-content: flex-start;
+            gap: 4px;
+        }
+        
         .navbar .text-secondary {
-            margin-left: 8px;
             font-weight: normal;
             color: #adb5bd !important;
             font-size: 1.1rem;
+            margin-left: 0;
+        }
+        
+        main {
+            flex: 1;
         }
         
         .content-card {
             background-color: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 2rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        h1, .lead {
-            text-align: left;
-            font-weight: 600;
+            border: 1px solid #e0e0e0;
         }
         
         h1 {
-            font-size: 2rem;
+            text-align: left;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
         }
         
         .lead {
+            text-align: left;
+            font-weight: normal;
             font-size: 1.1rem;
+            color: #6c757d;
         }
         
         .url-form {
             display: flex;
             gap: 12px;
+            margin-top: 1.5rem;
         }
         
         .form-control {
@@ -83,8 +99,8 @@
         }
         
         footer {
-            margin-top: 5rem;
-            padding-top: 1.5rem;
+            margin-top: auto;
+            padding-bottom: 20px;
         }
         
         .border-top {
@@ -105,28 +121,30 @@
         </div>
     </nav>
 
-    <main class="container mt-5">
-        <div class="row">
-            <div class="col-md-8 mx-auto">
-                <div class="content-card">
-                    <h1>Анализатор страниц</h1>
-                    <p class="lead mb-4">Бесплатно проверяйте сайты на SEO-пригодность</p>
-                    
-                    <form method="post" action="/urls" class="url-form">
-                        <input type="url" 
-                               name="url" 
-                               class="form-control" 
-                               placeholder="https://example.com" 
-                               required>
-                        <button type="submit" class="btn btn-primary">ПРОВЕРИТЬ</button>
-                    </form>
+    <main>
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="content-card">
+                        <h1>Анализатор страниц</h1>
+                        <p class="lead">Бесплатно проверяйте сайты на SEO-пригодность</p>
+                        
+                        <form method="post" action="/urls" class="url-form">
+                            <input type="url" 
+                                   name="url" 
+                                   class="form-control" 
+                                   placeholder="https://example.com" 
+                                   required>
+                            <button type="submit" class="btn btn-primary">Проверить</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
     <footer class="border-top">
-        <div class="container text-center">
+        <div class="container text-center pt-3">
             <a href="https://ru.hexlet.io/" target="_blank" class="text-primary">Hexlet</a>
         </div>
     </footer>
