@@ -50,3 +50,51 @@ def add_url(url_name):
     finally:
         cur.close()
         conn.close()
+
+def add_check(url_id, status_code, h1, title, description):
+    """Добавляет результат проверки URL"""
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        '''INSERT INTO checks (url_id, status_code, h1, title, description, created_at) 
+           VALUES (%s, %s, %s, %s, %s, NOW())''',
+        (url_id, status_code, h1, title, description)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+def get_checks(url_id):
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute(
+        'SELECT id, status_code, h1, title, description, created_at FROM checks WHERE url_id = %s ORDER BY id DESC',
+        (url_id,)
+    )
+    checks = cur.fetchall()
+    cur.close()
+    conn.close()
+    return checks
+
+def get_urls_with_checks():
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute('''
+        SELECT 
+            u.id, 
+            u.name, 
+            u.created_at,
+            c.created_at as last_check_date,
+            c.status_code as last_check_status
+        FROM urls u
+        LEFT JOIN (
+            SELECT DISTINCT ON (url_id) url_id, created_at, status_code
+            FROM checks
+            ORDER BY url_id, created_at DESC
+        ) c ON u.id = c.url_id
+        ORDER BY u.id DESC
+    ''')
+    urls = cur.fetchall()
+    cur.close()
+    conn.close()
+    return urls

@@ -1,3 +1,5 @@
+import requests
+from bs4 import BeautifulSoup
 import validators
 from urllib.parse import urlparse
 from flask import render_template, request, redirect, url_for, flash
@@ -28,16 +30,12 @@ def init_app(app):
     def add_url():
         url = request.form.get('url', '').strip()
         
-        # Валидация
         error = validate_url(url)
         if error:
             flash(error, 'danger')
             return render_template('index.html'), 422
         
-        # Нормализация URL
         normalized_url = normalize_url(url)
-        
-        # Добавление в базу данных
         url_id = db.add_url(normalized_url)
         
         flash('Страница успешно добавлена', 'success')
@@ -45,7 +43,7 @@ def init_app(app):
 
     @app.route('/urls')
     def list_urls():
-        urls = db.get_urls()
+        urls = db.get_urls_with_checks()
         return render_template('urls.html', urls=urls)
 
     @app.route('/urls/<int:id>')
@@ -54,4 +52,33 @@ def init_app(app):
         if not url:
             flash('Страница не найдена', 'danger')
             return redirect(url_for('index'))
-        return render_template('url.html', url=url)
+        checks = db.get_checks(id)
+        return render_template('url.html', url=url, checks=checks)
+
+    @app.route('/urls/<int:id>/checks', methods=['POST'])
+    def run_check(id):
+        url_data = db.get_url(id)
+        if not url_data:
+            flash('Страница не найдена', 'danger')
+            return redirect(url_for('index'))
+        
+        try:
+            response = requests.get(url_data['name'])
+            response.raise_for_status()
+            
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            status_code = response.status_code
+            h1 = soup.h1.string if soup.h1 else ''
+            title = soup.title.string if soup.title else ''
+            description = ''
+            meta_desc = soup.find('meta', attrs={'name': 'description'})
+            if meta_desc:
+                description = meta_desc.get('content', '')
+            
+            db.add_check(id, status_code, h1, title, description)
+            flash('Страница успешно проверена', 'success')
+        except requests.RequestException:
+            flash('Произошла ошибка при проверке', 'danger')
+        
+        return redirect(url_for('show_url', id=id))
