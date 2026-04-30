@@ -42,8 +42,8 @@
                     </thead>
                     <tbody>
                         {% for url in urls %}
-                        <tr {% if loop.index is even %}class="table-light"{% endif %}>
-                            <td>{{ url.id }}}</td>
+                        <tr>
+                            <td>{{ url.id }}</td>
                             <td><a href="{{ url_for('show_url', id=url.id) }}">{{ url.name }}</a></td>
                             <td>{{ url.last_check_date or '' }}</td>
                             <td>{{ url.last_check_status or '' }}</td>
@@ -62,3 +62,4 @@
     </footer>
 </body>
 </html>
+
