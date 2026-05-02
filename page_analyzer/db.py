@@ -52,7 +52,6 @@ def add_url(url_name):
         conn.close()
 
 def add_check(url_id, status_code, h1, title, description):
-    """Добавляет результат проверки URL"""
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
