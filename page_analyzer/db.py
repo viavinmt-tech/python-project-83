@@ -31,6 +31,15 @@ def get_url(url_id):
     return url
 
 
+def get_url_by_name(name):
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute('SELECT id FROM urls WHERE name = %s', (name,))
+    url = cur.fetchone()
+    cur.close()
+    conn.close()
+    return url
+
 def add_url(url_name):
     conn = get_connection()
     cur = conn.cursor()

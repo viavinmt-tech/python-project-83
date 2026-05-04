@@ -36,7 +36,15 @@ def init_app(app):
             return render_template('index.html'), 422
         
         normalized_url = normalize_url(url)
+        existing_url = db.get_url_by_name(normalized_url)  # Нужно добавить эту функцию
+    
+        if existing_url:
+            flash('Страница уже существует', 'info')
+            return redirect(url_for('show_url', id=existing_url['id']))
+    
         url_id = db.add_url(normalized_url)
+        flash('Страница успешно добавлена', 'success')
+        return redirect(url_for('show_url', id=url_id))
         
         flash('Страница успешно добавлена', 'success')
         return redirect(url_for('show_url', id=url_id))
