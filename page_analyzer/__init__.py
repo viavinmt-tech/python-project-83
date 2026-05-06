@@ -7,7 +7,10 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret-key")
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+
+    if not app.config["SECRET_KEY"] and os.getenv("FLASK_ENV") == "production":
+        raise ValueError("SECRET_KEY must be set in production environment")
 
     from page_analyzer import routes
 
