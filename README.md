@@ -7,9 +7,25 @@
 
 Проект развернут на Render.com: [https://python-project-83-i5ga.onrender.com](https://python-project-83-i5ga.onrender.com)
 
-## Настройка
 
-Скопируйте `.env.example` в `.env` и установите свой `SECRET_KEY`:
+# Page Analyzer
 
-```bash
-cp .env.example .env
+**Page Analyzer** — это веб-приложение для SEO-анализа веб-страниц. Сервис проверяет доступность сайта, анализирует ключевые мета-теги и предоставляет отчет по SEO-параметрам.
+
+## Возможности
+
+- Проверка доступности сайта (HTTP статус ответа)
+- Анализ заголовков страницы (h1, title)
+- Извлечение мета-описания (meta description)
+- История всех проверок для каждого сайта
+- Современный адаптивный интерфейс на Bootstrap
+
+## Технологии
+
+- Python 3.8+
+- Flask — веб-фреймворк
+- PostgreSQL — хранение данных
+- BeautifulSoup4 — парсинг HTML
+- Bootstrap 5 — стилизация
+- Gunicorn — WSGI сервер
+
