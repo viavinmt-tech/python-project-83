@@ -21,11 +21,13 @@ def validate_url(url):
     return None
 
 
-def init_app(app):
+def register_index_route(app):
     @app.route("/")
     def index():
         return render_template("index.html")
 
+
+def register_add_url_route(app):
     @app.route("/urls", methods=["POST"])
     def add_url():
         url = request.form.get("url", "").strip()
@@ -46,14 +48,15 @@ def init_app(app):
         flash("Страница успешно добавлена", "success")
         return redirect(url_for("show_url", id=url_id))
 
-        flash("Страница успешно добавлена", "success")
-        return redirect(url_for("show_url", id=url_id))
 
+def register_list_urls_route(app):
     @app.route("/urls")
     def list_urls():
         urls = db.get_urls_with_checks()
         return render_template("urls.html", urls=urls)
 
+
+def register_show_url_route(app):
     @app.route("/urls/<int:id>")
     def show_url(id):
         url = db.get_url(id)
@@ -63,6 +66,8 @@ def init_app(app):
         checks = db.get_checks(id)
         return render_template("url.html", url=url, checks=checks)
 
+
+def register_run_check_route(app):
     @app.route("/urls/<int:id>/checks", methods=["POST"])
     def run_check(id):
         url_data = db.get_url(id)
@@ -90,3 +95,11 @@ def init_app(app):
             flash("Произошла ошибка при проверке", "danger")
 
         return redirect(url_for("show_url", id=id))
+
+
+def init_app(app):
+    register_index_route(app)
+    register_add_url_route(app)
+    register_list_urls_route(app)
+    register_show_url_route(app)
+    register_run_check_route(app)
