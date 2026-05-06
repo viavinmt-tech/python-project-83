@@ -77,7 +77,8 @@ def add_check(url_id, status_code, h1, title, description):
     cur = conn.cursor()
     cur.execute(
         """
-        INSERT INTO checks (url_id, status_code, h1, title, description, created_at)
+        INSERT INTO checks
+        (url_id, status_code, h1, title, description, created_at)
         VALUES (%s, %s, %s, %s, %s, NOW())
         """,
         (url_id, status_code, h1, title, description)
