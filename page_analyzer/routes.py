@@ -22,71 +22,71 @@ def validate_url(url):
 
 
 def init_app(app):
-    @app.route('/')
+    @app.route("/")
     def index():
-        return render_template('index.html')
+        return render_template("index.html")
 
-    @app.route('/urls', methods=['POST'])
+    @app.route("/urls", methods=["POST"])
     def add_url():
-        url = request.form.get('url', '').strip()
-        
+        url = request.form.get("url", "").strip()
+
         error = validate_url(url)
         if error:
-            flash(error, 'danger')
-            return render_template('index.html'), 422
-        
-        normalized_url = normalize_url(url)
-        existing_url = db.get_url_by_name(normalized_url)  # Нужно добавить эту функцию
-    
-        if existing_url:
-            flash('Страница уже существует', 'info')
-            return redirect(url_for('show_url', id=existing_url['id']))
-    
-        url_id = db.add_url(normalized_url)
-        flash('Страница успешно добавлена', 'success')
-        return redirect(url_for('show_url', id=url_id))
-        
-        flash('Страница успешно добавлена', 'success')
-        return redirect(url_for('show_url', id=url_id))
+            flash(error, "danger")
+            return render_template("index.html"), 422
 
-    @app.route('/urls')
+        normalized_url = normalize_url(url)
+        existing_url = db.get_url_by_name(normalized_url)
+
+        if existing_url:
+            flash("Страница уже существует", "info")
+            return redirect(url_for("show_url", id=existing_url["id"]))
+
+        url_id = db.add_url(normalized_url)
+        flash("Страница успешно добавлена", "success")
+        return redirect(url_for("show_url", id=url_id))
+
+        flash("Страница успешно добавлена", "success")
+        return redirect(url_for("show_url", id=url_id))
+
+    @app.route("/urls")
     def list_urls():
         urls = db.get_urls_with_checks()
-        return render_template('urls.html', urls=urls)
+        return render_template("urls.html", urls=urls)
 
-    @app.route('/urls/<int:id>')
+    @app.route("/urls/<int:id>")
     def show_url(id):
         url = db.get_url(id)
         if not url:
-            flash('Страница не найдена', 'danger')
-            return redirect(url_for('index'))
+            flash("Страница не найдена", "danger")
+            return redirect(url_for("index"))
         checks = db.get_checks(id)
-        return render_template('url.html', url=url, checks=checks)
+        return render_template("url.html", url=url, checks=checks)
 
-    @app.route('/urls/<int:id>/checks', methods=['POST'])
+    @app.route("/urls/<int:id>/checks", methods=["POST"])
     def run_check(id):
         url_data = db.get_url(id)
         if not url_data:
-            flash('Страница не найдена', 'danger')
-            return redirect(url_for('index'))
-        
+            flash("Страница не найдена", "danger")
+            return redirect(url_for("index"))
+
         try:
-            response = requests.get(url_data['name'])
+            response = requests.get(url_data["name"])
             response.raise_for_status()
-            
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
+
+            soup = BeautifulSoup(response.text, "html.parser")
+
             status_code = response.status_code
-            h1 = soup.h1.string if soup.h1 else ''
-            title = soup.title.string if soup.title else ''
-            description = ''
-            meta_desc = soup.find('meta', attrs={'name': 'description'})
+            h1 = soup.h1.string if soup.h1 else ""
+            title = soup.title.string if soup.title else ""
+            description = ""
+            meta_desc = soup.find("meta", attrs={"name": "description"})
             if meta_desc:
-                description = meta_desc.get('content', '')
-            
+                description = meta_desc.get("content", "")
+
             db.add_check(id, status_code, h1, title, description)
-            flash('Страница успешно проверена', 'success')
+            flash("Страница успешно проверена", "success")
         except requests.RequestException:
-            flash('Произошла ошибка при проверке', 'danger')
-        
-        return redirect(url_for('show_url', id=id))
+            flash("Произошла ошибка при проверке", "danger")
+
+        return redirect(url_for("show_url", id=id))
