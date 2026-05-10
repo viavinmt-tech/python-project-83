@@ -3,15 +3,17 @@ name: hexlet-check
 on:
   push:
     branches:
-      - main
-  pull_request:
+      - '**'
+    tags:
+      - '**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Check project
+      - uses: actions/checkout@v6
+
+      - name: Hexlet project check
         uses: hexlet/project-action@release
         with:
-          hexlet-id: 83
+          hexlet-id: ${{ secrets.HEXLET_ID }}
