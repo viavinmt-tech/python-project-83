@@ -13,4 +13,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check project
         uses: hexlet/project-action@release
-
+        with:
+          hexlet-id: 83
