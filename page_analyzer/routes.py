@@ -1,8 +1,10 @@
-import requests
-from bs4 import BeautifulSoup
-import validators
 from urllib.parse import urlparse
-from flask import render_template, request, redirect, url_for, flash
+
+import requests
+import validators
+from bs4 import BeautifulSoup
+from flask import flash, redirect, render_template, request, url_for
+
 from page_analyzer import db
 
 

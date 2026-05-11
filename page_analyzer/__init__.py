@@ -1,6 +1,7 @@
 import os
-from flask import Flask
+
 from dotenv import load_dotenv
+from flask import Flask
 
 load_dotenv()
 
@@ -8,10 +9,12 @@ load_dotenv()
 def create_app():
     app = Flask(__name__)
     app.config["SECRET_KEY"] = os.getenv(  # NOSONAR
-        "SECRET_KEY", "dev-secret-key"  # NOSONAR
+        "SECRET_KEY",
+        "dev-secret-key",  # NOSONAR
     )
 
     from page_analyzer import routes
+
     routes.init_app(app)
 
     return app
